@@ -1,5 +1,7 @@
-# geo-distributed-gke-demo
+# Multi-Region GKE Demo
 Deploy a service to geographically distributed GKE clusters with a GLB
+
+![multi-cluster gke](images/multi-cluster-gke-diagram.png)
 
 NOTE: This demo creates two 3-node GKE clusters that should not be used for production purposes. The node pools are created as part of the `google_container_cluster` resource and all of the vms will be terminated and recreated whenever the cluster is updated. (For best practices see: [Using GKE with Terraform](https://www.terraform.io/docs/providers/google/guides/using_gke_with_terraform.html))
 

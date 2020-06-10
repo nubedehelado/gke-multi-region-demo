@@ -1,5 +1,15 @@
-# TODO: enable apis
+# ensure required APIs are enabled in project
+resource "google_project_service" "gkehub_api" {
+  service = "gkehub.googleapis.com"
+}
+resource "google_project_service" "anthos_api" {
+  service = "anthos.googleapis.com"
+}
+resource "google_project_service" "multiclusteringress_api" {
+  service = "multiclusteringress.googleapis.com"
+}
 
+# create a VPC network with a subnet in one US and EU GCP region
 module "vpc" {
   source  = "terraform-google-modules/network/google"
   version = "~> 2.3"
@@ -10,19 +20,19 @@ module "vpc" {
 
   subnets = [
     {
-      subnet_name   = "oregon-subnet"
+      subnet_name   = "us-subnet"
       subnet_ip     = "10.128.0.0/20"
       subnet_region = var.region1
     },
     {
-      subnet_name   = "belgium-subnet"
+      subnet_name   = "eu-subnet"
       subnet_ip     = "10.132.0.0/20"
       subnet_region = var.region2
     }
   ]
 
   secondary_ranges = {
-    oregon-subnet = [
+    us-subnet = [
       {
         range_name    = join("-", [var.region1, "service-range"])
         ip_cidr_range = "10.24.0.0/20"
@@ -33,7 +43,7 @@ module "vpc" {
       }
     ]
 
-    belgium-subnet = [
+    eu-subnet = [
       {
         range_name    = join("-", [var.region2, "service-range"])
         ip_cidr_range = "10.0.0.0/20"
@@ -57,6 +67,7 @@ module "vpc" {
   ]
 }
 
+# deploy a cluster in the US and EU
 module "gke_us" {
   source                     = "terraform-google-modules/kubernetes-engine/google"
   project_id                 = var.project
@@ -64,7 +75,7 @@ module "gke_us" {
   region                     = var.region1
   zones                      = [join("-", [var.region1, "a"])]
   network                    = module.vpc.network_name
-  subnetwork                 = "oregon-subnet"
+  subnetwork                 = "us-subnet"
   ip_range_pods              = join("-", [var.region1, "pod-range"])
   ip_range_services          = join("-", [var.region1, "service-range"])
   http_load_balancing        = false
@@ -128,7 +139,7 @@ module "gke_eu" {
   region                     = var.region2
   zones                      = [join("-", [var.region2, "c"])]
   network                    = module.vpc.network_name
-  subnetwork                 = "belgium-subnet"
+  subnetwork                 = "eu-subnet"
   ip_range_pods              = join("-", [var.region2, "pod-range"])
   ip_range_services          = join("-", [var.region2, "service-range"])
   http_load_balancing        = false
@@ -186,12 +197,12 @@ module "gke_eu" {
 }
 
 module "service_accounts" {
-  source      = "terraform-google-modules/service-accounts/google"
-  version     = "~> 3.0"
-  project_id  = var.project
-  prefix      = "sa"
-  names       = ["gke-hub"]
-  description = "Service Account to connect K8s clusters to GKE Hub"
+  source        = "terraform-google-modules/service-accounts/google"
+  version       = "~> 3.0"
+  project_id    = var.project
+  prefix        = "sa"
+  names         = ["gke-hub"]
+  description   = "Service Account to connect K8s clusters to GKE Hub"
   generate_keys = "true"
   project_roles = [
     join("=>", [var.project, "roles/gkehub.connect"]),
