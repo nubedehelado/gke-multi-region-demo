@@ -85,6 +85,11 @@ kubectl delete -f namespace.yaml \
 kubectl delete -f namespace.yaml \
 --context <eu-cluster>
 
+# unregister each cluster from GKE Hub
+gcloud container hub memberships unregister gke-us
+
+gcloud container hub memberships unregister gke-eu
+
 # navigate to /terraform
 cd ../terraform
 
