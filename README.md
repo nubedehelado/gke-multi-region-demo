@@ -48,7 +48,12 @@ It is recommended that you run this demo in Cloud Shell, which already includes 
    ```bash
    gcloud container hub memberships list
    ```
-9. To deploy the Global HTTP Load Balancer and web service, follow the steps in [Deploying Ingress across clusters
+9. Configure access to each of your clusters for kubectl.
+   ```bash
+   gcloud container clusters get-credentials gke-eu --region europe-west1
+   gcloud container clusters get-credentiasl gke-us --region us-central1
+   ```
+10. To deploy the Global HTTP Load Balancer and web service, follow the steps in [Deploying Ingress across clusters
 ](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-for-anthos). 
 
    **NOTE**: All of the YAML files used in the tutorial are located in `/kubernetes`.
