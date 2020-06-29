@@ -24,7 +24,7 @@ It is recommended that you run this demo in Cloud Shell, which already includes 
     ```
 4. Retrieve the Service Account key from the Terraform outputs and write it to a file named `key.json` in your current directory. 
     ```bash
-    terraform output -json service_account_key | jq '.rendered' > key.json
+    terraform output -json service_account_key | jq '.rendered | fromjson' > key.json
     ```
  5. Find the URIs for your clusters.
     ```bash
@@ -51,7 +51,7 @@ It is recommended that you run this demo in Cloud Shell, which already includes 
 9. Configure access to each of your clusters for kubectl.
    ```bash
    gcloud container clusters get-credentials gke-eu --region europe-west1
-   gcloud container clusters get-credentiasl gke-us --region us-central1
+   gcloud container clusters get-credentials gke-us --region us-central1
    ```
 10. To deploy the Global HTTP Load Balancer and web service, follow the steps in [Deploying Ingress across clusters
 ](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-for-anthos). 
