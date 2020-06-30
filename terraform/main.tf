@@ -78,7 +78,7 @@ module "gke_us" {
   subnetwork                 = "us-subnet"
   ip_range_pods              = join("-", [var.region1, "pod-range"])
   ip_range_services          = join("-", [var.region1, "service-range"])
-  http_load_balancing        = false
+  http_load_balancing        = true
   horizontal_pod_autoscaling = true
   network_policy             = true
 
@@ -142,7 +142,7 @@ module "gke_eu" {
   subnetwork                 = "eu-subnet"
   ip_range_pods              = join("-", [var.region2, "pod-range"])
   ip_range_services          = join("-", [var.region2, "service-range"])
-  http_load_balancing        = false
+  http_load_balancing        = true
   horizontal_pod_autoscaling = true
   network_policy             = true
 
