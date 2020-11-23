@@ -9,7 +9,6 @@ Deploy a service to geographically distributed GKE clusters with a GLB
 
 It is recommended that you run this demo in Cloud Shell, which already includes all the necessary software packages used in this demo. If you are running the demo on your workstation, then ensure the following tools are installed:
 * [Google Cloud SDK](https://cloud.google.com/sdk/install)
-* [jq](https://stedolan.github.io/jq/download/)
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 * [Terraform](https://www.terraform.io/downloads.html) (Version 0.13.0 or higher)
 
@@ -39,7 +38,7 @@ It is recommended that you run this demo in Cloud Shell, which already includes 
 7. To deploy the Global HTTP Load Balancer and web service, follow the steps in [Deploying Ingress across clusters
 ](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-for-anthos). 
 
- **NOTE**: All of the YAML files used in the tutorial are located in `/kubernetes`.
+    **NOTE**: All of the YAML files used in the tutorial are located in `/kubernetes`.
 
 ## Cleanup
 
