@@ -9,9 +9,8 @@ Deploy a service to geographically distributed GKE clusters with a GLB
 
 It is recommended that you run this demo in Cloud Shell, which already includes all the necessary software packages used in this demo. If you are running the demo on your workstation, then ensure the following tools are installed:
 * [Google Cloud SDK](https://cloud.google.com/sdk/install)
-* [jq](https://stedolan.github.io/jq/download/)
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
-* [Terraform](https://www.terraform.io/downloads.html) (Version 0.12.0 or higher)
+* [Terraform](https://www.terraform.io/downloads.html) (Version 0.13.0 or higher)
 
 ## Getting Started
 
@@ -22,46 +21,24 @@ It is recommended that you run this demo in Cloud Shell, which already includes 
     terraform init
     terraform apply
     ```
-4. Retrieve the Service Account key from the Terraform outputs and write it to a file named `key.json` in your current directory. 
-    ```bash
-    terraform output -json service_account_key | jq '.rendered | fromjson' > key.json
-    ```
- 5. Find the URIs for your clusters.
-    ```bash
-    gcloud container clusters list --uri
-    ```
- 6. Register the gke-eu cluster to GKE Hub using the Service Account key-file `key.json`.
-    ```bash
-    gcloud container hub memberships register gke-eu \
-        --project=<project-id> \
-        --gke-uri=<eu-cluster-uri> \
-        --service-account-key-file=key.json
-    ```
-7. Repeat step #6 for the gke-us cluster.
-   ```bash
-   gcloud container hub memberships register gke-us \
-       --project=<project-id> \
-       --gke-uri=<us-cluster-uri> \
-       --service-account-key-file=key.json
-   ```
-8. Verify that you have successfully registered your clusters with GKE Hub.
+4. Verify that you have successfully registered your clusters with GKE Hub.
    ```bash
    gcloud container hub memberships list
    ```
-9. Enable Ingress for Anthos and select gke-us as the config cluster.
+5. Enable Ingress for Anthos and select gke-us as the config cluster.
    ```bash
    gcloud alpha container hub ingress enable \
        --config-membership=projects/<project_id>/locations/global/memberships/gke-us
    ```
-10. Configure access to each of your clusters for kubectl.
+6. Configure access to each of your clusters for kubectl.
    ```bash
    gcloud container clusters get-credentials gke-eu --region europe-west1
    gcloud container clusters get-credentials gke-us --region us-central1
    ```
-11. To deploy the Global HTTP Load Balancer and web service, follow the steps in [Deploying Ingress across clusters
+7. To deploy the Global HTTP Load Balancer and web service, follow the steps in [Deploying Ingress across clusters
 ](https://cloud.google.com/kubernetes-engine/docs/how-to/ingress-for-anthos). 
 
-   **NOTE**: All of the YAML files used in the tutorial are located in `/kubernetes`.
+    **NOTE**: All of the YAML files used in the tutorial are located in `/kubernetes`.
 
 ## Cleanup
 
@@ -77,28 +54,6 @@ kubectl config use-context <us-cluster>
 
 # delete MCI and GLB 
 kubectl delete -f mci.yaml
-
-#delete MCS
-kubectl delete -f mcs.yaml
-
-# delete the zoneprinter app in each cluster
-kubectl delete -f deploy.yaml \
---context <us-cluster>
-
-kubectl delete -f deploy.yaml \
---context <eu-cluster>
-
-# delete the Namespace in each cluster
-kubectl delete -f namespace.yaml \
---context <us-cluster>
-
-kubectl delete -f namespace.yaml \
---context <eu-cluster>
-
-# unregister each cluster from GKE Hub
-gcloud container hub memberships unregister gke-us
-
-gcloud container hub memberships unregister gke-eu
 
 # navigate to /terraform
 cd ../terraform
