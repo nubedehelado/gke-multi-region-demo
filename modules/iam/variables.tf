@@ -1,3 +1,1 @@
-variable "service_account_name" {
-  default = "gke-hub"
-}
+variable "service_account_name" {}

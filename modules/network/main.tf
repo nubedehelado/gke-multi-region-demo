@@ -9,12 +9,12 @@ module "vpc" {
 
   subnets = [
     {
-      subnet_name   = "us-subnet"
+      subnet_name   = var.region1_subnet
       subnet_ip     = "10.128.0.0/20"
       subnet_region = var.region1
     },
     {
-      subnet_name   = "eu-subnet"
+      subnet_name   = var.region2_subnet
       subnet_ip     = "10.132.0.0/20"
       subnet_region = var.region2
     }
