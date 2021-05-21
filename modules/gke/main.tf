@@ -1,6 +1,6 @@
 module "gke_cluster" {
   source                 = "terraform-google-modules/kubernetes-engine/google"
-  version                = "~> 12.1.0"
+  version                = "~> 14.3.0"
   project_id             = var.project
   name                   = var.cluster_name
   regional               = true
@@ -15,13 +15,13 @@ module "gke_cluster" {
 # connect GKE clusters to Anthos hub
 module "gke_hub" {
   source                  = "terraform-google-modules/kubernetes-engine/google//modules/hub"
-  version                 = "12.1.0"
+  version                 = "~> 14.3.0"
   project_id              = var.project
-  location                = module.gke_us.location
+  location                = module.gke_cluster.location
   cluster_name            = module.gke_cluster.name
   cluster_endpoint        = module.gke_cluster.endpoint
   gke_hub_membership_name = module.gke_cluster.name
   use_existing_sa         = true
   gke_hub_sa_name         = var.service_account_name
-  sa_private_key          = base64encode(lookup(var.service_account_key, "rendered", ""))
+  sa_private_key          = base64encode(var.service_account_key)
 }

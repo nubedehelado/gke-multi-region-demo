@@ -1,6 +1,7 @@
 locals {
   us_subnet = "us-subnet"
   eu_subnet = "eu-subnet"
+  service_account_name = "gke-hub"  
 }
 
 # enable required APIs in project
@@ -39,7 +40,8 @@ module "network" {
 
 module "service_account" {
   source               = "./modules/iam"
-  service_account_name = "gke-hub"
+  project = var.project
+  service_account_name = local.service_account_name
 }
 
 module "gke_us" {
@@ -52,7 +54,7 @@ module "gke_us" {
   region               = var.region1
   subnetwork           = local.us_subnet
   service_account_key  = module.service_account.key
-  service_account_name = module.service_account.name
+  service_account_name = local.service_account_name
 }
 
 module "gke_eu" {
@@ -65,6 +67,6 @@ module "gke_eu" {
   region               = var.region2
   subnetwork           = local.eu_subnet
   service_account_key  = module.service_account.key
-  service_account_name = module.service_account.name
+  service_account_name = local.service_account_name
 
 }
