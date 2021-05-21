@@ -22,7 +22,7 @@ resource "google_project_service" "multiclusteringress_api" {
 
 module "network" {
 
-  source = "modules/network"
+  source = "./modules/network"
 
   depends_on = [
     google_project_service.compute_engine_api,
@@ -38,13 +38,13 @@ module "network" {
 }
 
 module "service_account" {
-  source               = "modules/iam"
+  source               = "./modules/iam"
   service_account_name = "gke-hub"
 }
 
 module "gke_us" {
 
-  source = "modules/gke"
+  source = "./modules/gke"
 
   cluster_name         = "gke-us"
   network              = module.network.name
@@ -57,7 +57,7 @@ module "gke_us" {
 
 module "gke_eu" {
 
-  source = "modules/gke"
+  source = "./modules/gke"
 
   cluster_name         = "gke-eu"
   network              = module.network.name
